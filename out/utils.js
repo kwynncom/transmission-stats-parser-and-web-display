@@ -1,0 +1,1 @@
+function cree(type) { return document.createElement(type); }
