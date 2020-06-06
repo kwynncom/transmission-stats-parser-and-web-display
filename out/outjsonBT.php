@@ -1,25 +1,19 @@
 <?php
 
 require_once('/opt/kwynn/kwcod.php');
-
 require_once(__DIR__ . '/../dao.php');
 
-$KW_INIT_JSON_TSTATS_v_2020 = '';
-$KW_INIT_ANOB_TSTATS_v_2020 = false;
 define('KW_TSTATS_IGNORE_D', 10);
-setOutput();
 
-function setOutput() {
-    global $KW_INIT_JSON_TSTATS_v_2020;
-    global $KW_INIT_ANOB_TSTATS_v_2020;
+function getTSOutput() {
     
     $dao = new dao_tstats();
     $rawall = $dao->get(100); unset($dao);
     $all = tstats_ht_filter($rawall); unset($rawall);
     $all = htf2($all);
     
-    $KW_INIT_ANOB_TSTATS_v_2020 = $all;
-    $KW_INIT_JSON_TSTATS_v_2020 = json_encode($all); unset($all);
+    return $all;
+
 }
 
 function htf2($in) {
@@ -85,8 +79,10 @@ function tstats_ht_filter($rin) {
 	$seed = seed_filt($seed);
 	$t['seedtime'] = $seed;
 
-	$t['asof'] = date('D M d h:i A', $r['ts']); // Wed Jun 03 06:08 PM
-	$t['asof'] = date('D n/j h:iA', $r['ts']); // Wed Jun 03 06:08 PM
+	// $t['asof'] = date('D M d h:i A', $r['ts']); // Wed Jun 03 06:08 PM
+	// $t['asof'] = date('D n/j h:iA', $r['ts']);  // Fri 6/5 08:21PM	
+	$t['asof'] = date('D n/j h:iA (s', $r['ts']) . 's)';  // Wed 6/3 09:50PM (00s)	
+	
 	$t['ts']   = $r['ts'];
 	
 	$ret[] = $t;

@@ -20,10 +20,20 @@ class kwProcMutex {
 
 	if (PHP_SAPI !== 'cli') die('cli only');
 
+	if (1 && !isAWS()) { 
+	    $sleep = 30;
+	    $maxIt = 10;
+	} else {
+	    $sleep = 30 * 60;
+	    $maxIt = 1500;
+	}
+	
+	$i = 0;
+	
 	do {
 	    $funcin();
-	    sleep(30 * 60);
-	} while(1);	
+	    sleep($sleep);
+	} while(++$i <= $maxIt);	
     }
     
     public function __construct($name) {

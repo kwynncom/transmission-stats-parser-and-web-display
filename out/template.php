@@ -38,5 +38,5 @@
 
     
 </body>
-<script>KW_TSTATS_INIT_O = <?php echo $KW_INIT_JSON_TSTATS_v_2020; ?>;</script>
+<script>KW_TSTATS_INIT_O = <?php echo getjsonweb(); ?>;</script>
 </html>
