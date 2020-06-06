@@ -17,12 +17,29 @@ function getTSOutput() {
 
 }
 
+function popperm2(&$vin, $cin) {
+    if (isset($vin['perm'])) return;
+    $fs = ['totszh', 'totmb', 'fname']; // must match below for totmb
+    $vin['permheaders'] = $fs;
+
+    foreach($fs as $f) $vin['perm'][] = $cin[$f];
+    $vin['finfo']['totmb'] = 'hide';
+}
+
+function getmyrat($n, $d) {
+    $ret = round($n / $d, 3);
+    return $ret;
+}
+
 function htf2($in) {
-    $ret['headers'] = ['rat', 'MB', 'asof', 's4','l4', 'r4', 's6','l6', 'r6', 'seedt', 'hide'];
+    $ret['headers'] = ['myr', 'rat', 'MB', 'asof', 's4','l4', 'r4', 's6','l6', 'r6', 'seedt', 'ts'];
+    $ret['finfo']['ts'] = 'hide';
     $ret['v'] = [];
-    
+        
     foreach($in as $r) {
+	popperm2($ret, $r);
 	$t = [];
+	$t[] = getmyrat($r['upmb'], $ret['perm'][1]); // must match above
 	$t[] = $r['rat'];
 	$t[] = $r['upmb'];
 	$t[] = $r['asof'];
@@ -60,6 +77,34 @@ function poptra(&$t, $r) {
     $t['6l'] = $r['ipv6']['leechers'];
 }
 
+function byteswu($n, $u) {
+    if ($u === 'GB') $m = 1000;
+    else             $m = 1;
+    $pf = $n * $m;
+    $pi = intval(round($pf));
+    
+    if (abs($pf - $pi ) < 0.09) return $pi;
+    return $pf;
+    
+    
+}
+
+function popperm(&$rin, $tor) {
+    
+    $rin['fname']   = $tor['Name']['r'];
+    
+    $th = $tor['Total size']['r'];
+    $th = trim(preg_replace('/\s\(.+/', '', $th));
+    preg_match('/(\d+\.\d+) (\w+)/', $th, $m);
+    $rin['totszh'] = $th;
+
+    $mb = byteswu($m[1], $m[2]);
+    $rin['totmb'] = $mb;
+    
+
+    $x  = 2;
+}
+
 function tstats_ht_filter($rin) {
     $ret = [];
     
@@ -74,6 +119,8 @@ function tstats_ht_filter($rin) {
 	$t['rat'] = floatval($tor['Ratio']['v']);
 	
 	poptra($t, $r['tra']);
+	
+	popperm($t, $tor);
 	
 	$seed = $tor['Seeding Time']['v'];
 	$seed = preg_replace('/\s+\(\d+ seconds\)\s*/', '', $seed);

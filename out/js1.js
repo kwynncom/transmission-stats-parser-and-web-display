@@ -1,4 +1,10 @@
 window.onload = function() { proc1(); }
+
+function shouldHide(fi, head) {
+    if (fi && fi[head] && fi[head] === 'hide') return true;
+    return false;
+}
+
 function proc1() {
     const tabele = cree('table');
     document.getElementById('stattabc').append(tabele); 
@@ -7,13 +13,16 @@ function proc1() {
     const bigd = KW_TSTATS_INIT_O;
 
     const fs   = bigd['headers'];
+    const fi   = bigd['finfo'];
     const trh = cree('tr');
     
     for (let i=0; i < fs.length; i++) {
-	const hv = fs[i];
-	if (hv === 'hide') continue;
-	let th = cree('th');
-	th.innerHTML = hv;
+	const head = fs[i];
+	
+	if (shouldHide(fi, head)) continue;
+
+	const th = cree('th');
+	th.innerHTML = head;
 	trh.append(th);
     }
     tabele.append(trh);
@@ -24,14 +33,22 @@ function proc1() {
         tabele.append(tre);
 	
 	for (let j=0; j < r.length; j++) {
-	    let head = fs[j];
-	    if (head === 'hide') continue;
-	    let tde = cree('td');
+	    const head = fs[j];
+	    
+	    if (shouldHide(fi, head)) continue;
+
+	    const tde = cree('td');
 	    let tv =  r[j];
 	    if (head === 'rat') tde.className = 'rattd';
 	    if (head === 'MB')  tv = r[j].toFixed(1);
 	    tde.innerHTML = tv;
 	    tre.append(tde);	
 	}
+    }
+    
+    for (let i=0; i < bigd['perm'].length; i++) {
+	const head = bigd['permheaders'][i];
+	if (shouldHide(fi, head)) continue;	
+	byid(head).innerHTML = bigd['perm'][i];
     }
 }
