@@ -16,7 +16,7 @@
     
     td, th { padding-right: 1.0ex }
     
-    .explanation { font-family: sans-serif }
+    body { font-family: sans-serif }
     .explanationTop { 
 	margin: 0
     }
@@ -35,7 +35,9 @@
 	and seed time.  The seed time is the time that my client has been running and offering the file, regardless of whether any data goes "up."    </p>
     </div>
    
-
+    <p>This source code is on GitHub: 
+	<a href ='https://github.com/kwynncom/transmission-stats-parser-and-web-display'>https://github.com/kwynncom/transmission-stats-parser-and-web-display</a>
+    </p>
     
 </body>
 <script>KW_TSTATS_INIT_O = <?php echo getjsonweb(); ?>;</script>

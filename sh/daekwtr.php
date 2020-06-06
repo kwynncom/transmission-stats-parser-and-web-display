@@ -21,7 +21,7 @@ class kwProcMutex {
 	if (PHP_SAPI !== 'cli') die('cli only');
 
 	if (1 && !isAWS()) { 
-	    $sleep = 30;
+	    $sleep = 300;
 	    $maxIt = 10;
 	} else {
 	    $sleep = 30 * 60;

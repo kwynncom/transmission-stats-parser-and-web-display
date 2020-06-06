@@ -3,12 +3,13 @@
 require_once('/opt/kwynn/kwcod.php');
 require_once(__DIR__ . '/../dao.php');
 
-define('KW_TSTATS_IGNORE_D', 10);
+define('KW_TSTATS_IGNORE_MB_D', 10);
+define('KW_TSTATS_IGNORE_HR_D',  3);
 
 function getTSOutput() {
     
     $dao = new dao_tstats();
-    $rawall = $dao->get(100); unset($dao);
+    $rawall = $dao->get(); unset($dao);
     $all = tstats_ht_filter($rawall); unset($rawall);
     $all = htf2($all);
     
@@ -94,8 +95,18 @@ function tstats_ht_filter($rin) {
 
 }
 
-function isfcc($a, $b) {
-    if (abs($a - $b) < KW_TSTATS_IGNORE_D) return true;
+function cutme($ain, $bin, $cin) {
+    
+    $amb = $ain['upmb'];
+    $bmb = $bin['upmb'];
+    $as  = $ain['ts'];
+    $bs  = $cin['ts'];
+    
+    $sd  = abs($as - $bs);
+    $hrd = $sd / 3600;
+    $mbd = abs($amb - $bmb);
+        
+    if ($mbd < KW_TSTATS_IGNORE_MB_D && $hrd  < KW_TSTATS_IGNORE_HR_D) return true;
     return false;
 }
 
@@ -104,7 +115,7 @@ function filterClose(&$vin) {
     if ($cnt <= 2) return;
     
     $un = [];
-    for ($i=1; $i < $cnt; $i++) if (isfcc($vin[$i]['upmb'],  $vin[$i-1]['upmb'])) $un[$i] = 1;
+    for ($i=2; $i < $cnt - 2; $i++) if (cutme($vin[$i],  $vin[$i-1], $vin[$i+1])) $un[$i] = 1;
     
     if (count($un) === 0) return;
     foreach($un as $i => $ignore) unset($vin[$i]);
