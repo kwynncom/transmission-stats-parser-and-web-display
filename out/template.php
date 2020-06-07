@@ -27,6 +27,7 @@
 
     <p class="explanation explanationTop">Explanation below the data.    </p>
     
+    <div>last tracker check (min ago): <span id='lmago' /></div>
     <div>
 	<div id='stattabc'></div>
 	<div>

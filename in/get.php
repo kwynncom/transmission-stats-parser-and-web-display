@@ -11,6 +11,7 @@ class transmission_stats {
 	$this->alldat['tor'] = [];
 	$this->alldat['tra'] = [];
 	$this->alldat['errmsg'] = '';
+	$this->alldat['tra_lmago'] = '';
 	$this->p1();
     }
     
@@ -66,7 +67,6 @@ class transmission_stats {
     
     private function ptr($raw) {
 
-
 	//     Tracker had 731 seeders and 18 leechers 7 minutes (442 seconds) ago
 	//     Tracker had  731 seeders and   18   leechers 7 minutes (442 seconds) ago
 	$p = '/Tracker had (\d+) seeders and (\d+) leechers [^\(]+\((\d+) seconds\) ago/';
@@ -89,7 +89,11 @@ class transmission_stats {
 	    
 	    $ret[$k]['seeders' ] = intval($matches[1][$i]);
 	    $ret[$k]['leechers'] = intval($matches[2][$i]);
-	    $ret[$k]['s_ago']	 = intval($matches[3][$i]);
+	    $mago = intval($matches[3][$i]);
+	    $ret[$k]['s_ago'] = $mago;
+	    if (!$this->alldat['tra_lmago']) 
+		 $this->alldat['tra_lmago'] = intval(round($mago / 60));
+	    	    
 	    $i++;
 	    unset($k);
 	} unset($ks1, $now, $i, $matches);

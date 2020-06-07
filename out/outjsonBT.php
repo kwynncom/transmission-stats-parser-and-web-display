@@ -10,11 +10,17 @@ function getTSOutput() {
     
     $dao = new dao_tstats();
     $rawall = $dao->get(); unset($dao);
-    $all = tstats_ht_filter($rawall); unset($rawall);
+    $all = tstats_ht_filter($rawall); 
     $all = htf2($all);
+    $all['lmago'] = getlmago($rawall); unset($rawall);
     
     return $all;
+}
 
+function getlmago($din) {
+    if (isset ($din[0]['tra_lmago']))
+	return $din[0]['tra_lmago'];
+    else return '';
 }
 
 function popperm2(&$vin, $cin) {

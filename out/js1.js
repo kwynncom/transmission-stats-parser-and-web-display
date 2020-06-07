@@ -12,6 +12,7 @@ function proc1() {
     
     const bigd = KW_TSTATS_INIT_O;
 
+    byid('lmago').innerHTML = bigd['lmago'];
     const fs   = bigd['headers'];
     const fi   = bigd['finfo'];
     const trh = cree('tr');
