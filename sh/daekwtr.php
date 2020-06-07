@@ -57,8 +57,9 @@ class kwProcMutex {
     private function resolveExisting() {
 	$pid = trim(file_get_contents($this->pidfn));
 	if (!$pid || !is_numeric($pid) || !preg_match('/^\d+$/', $pid)) return;
-	$r = shell_exec("kill -0 $pid 2>&1 ");
-	if (strpos($r, 'No such process')) return;
-	die('already running' . "\n");
+	$r = trim(shell_exec("kill -15 $pid 2>&1 "));
+	if ($r) die('kill failed with ' . $r);
+	// if (strpos($r, 'No such process')) return;
+	// die('already running' . "\n");
     }
 }
