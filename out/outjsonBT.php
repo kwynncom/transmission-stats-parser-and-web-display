@@ -118,7 +118,9 @@ function tstats_ht_filter($rin) {
     
     foreach($rin as $r) {
 	$tor = $r['tor'];
-	$t = [];
+	if (!isset($tor['Uploaded']['v'])) continue;
+
+	$t = [];	
 	$up   = $tor['Uploaded']['v'];
 	$up   = floatval(preg_replace('/[^\d\.]/', '', $up));
 	$t['upmb'] = $up;
