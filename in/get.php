@@ -13,6 +13,7 @@ class transmission_stats {
 	$this->alldat['errmsg'] = '';
 	$this->alldat['tra_lmago'] = '';
 	$this->p1();
+	$this->p20();
     }
     
     public function get() { return $this->alldat; }
@@ -23,8 +24,11 @@ class transmission_stats {
 	$cred  = $credo['cred'];
 	$cmd  = 'transmission-remote -n ';
 	$cmd .= " '$cred' ";
+	if (!($sw && isset($sw[0]) && $sw[0] === '-')) {
 	$cmd .= ' -t 1 -i';
-	$cmd .= $sw;
+	$cmd .= $sw; }
+	else 
+	$cmd .= " $sw ";
 	$cmd .= ' 2>&1 ';
 	$cret = shell_exec($cmd);
 	$fret = $this->cmdErrCk($cret);
@@ -47,13 +51,22 @@ class transmission_stats {
 	$ret['curr'] = $curr;
 	return $ret;
     }
+    
+    private function p20() {
+	$raw = $this->runCmd('-st');
+	$pos = strpos($raw, "\n\nTOTAL\n");
+	if ($pos === false) return;
+	$tot = substr($raw, $pos);
+
+	return;
+    }
 
     private function p1() {
 	$this->rawdatto = $this->runCmd();
 	if (!$this->rawdatto) return;
 	$fa  = $this->toGet();
 	
-	array_walk_recursive($fa, [$this, 'parse']); unset($fa, $this->rawdatto);
+	array_walk_recursive($fa, [$this, 'parse1']); unset($fa, $this->rawdatto);
 	
 	$rawtd = $this->runCmd('t');
 	$trdat = $this->ptr($rawtd); unset($rawtd);
@@ -101,21 +114,36 @@ class transmission_stats {
 	return $ret;
     }
     
-    private function parse($key) {
+    private static function parse2($key, $hay) {
 	$r = "/$key:\s*(.+)\n/";
-	preg_match($r, $this->rawdatto, $matches);
+	preg_match($r, $hay, $matches);
+	return $matches;
+    }
+    
+    private static function parse3($key, $din) {
+	$matches = self::parse2($key, $din );
+
 	if (!isset($matches[1])) {
 	    return;
 	}
 	if (!trim($matches[1])) {
 	    return;
 	}
-	$this->tordat[$key]['r'] = trim($matches[0]);
-	$this->tordat[$key]['v'] = trim($matches[1]);
-
-	$t = $matches[1];
 	
-	return;
-		
+	$ret[$key]['r'] = trim($matches[0]);
+	$ret[$key]['v'] = trim($matches[1]);
+	
+	return $ret;
+    }
+    
+    private function parse1($key) {
+	
+	$pa = self::parse3($key, $this->rawdatto);
+	
+	if (!isset($this->tordat)) 
+		   $this->tordat = [];
+	
+		   $this->tordat = array_merge($this->tordat, $pa);
+	
     }
 }
