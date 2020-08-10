@@ -135,8 +135,6 @@ function tstats_ht_filter($rin) {
 	$seed = seed_filt($seed);
 	$t['seedtime'] = $seed;
 
-	// $t['asof'] = date('D M d h:i A', $r['ts']); // Wed Jun 03 06:08 PM
-	// $t['asof'] = date('D n/j h:iA', $r['ts']);  // Fri 6/5 08:21PM	
 	$t['asof'] = date('D n/j h:iA (s', $r['ts']) . 's)';  // Wed 6/3 09:50PM (00s)	
 	
 	$t['ts']   = $r['ts'];
@@ -166,11 +164,14 @@ function cutme($ain, $bin, $cin) {
 }
 
 function filterClose(&$vin) {
+    
+    static $cfn = 15; // check first n
+    
     $cnt = count($vin);
-    if ($cnt <= 2) return;
+    if ($cnt < $cfn) return;
     
     $un = [];
-    for ($i=2; $i < $cnt - 2; $i++) if (cutme($vin[$i],  $vin[$i-1], $vin[$i+1])) $un[$i] = 1;
+    for ($i=$cfn; $i < $cnt - 2; $i++) if (cutme($vin[$i],  $vin[$i-1], $vin[$i+1])) $un[$i] = 1;
     
     if (count($un) === 0) return;
     foreach($un as $i => $ignore) unset($vin[$i]);
