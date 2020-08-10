@@ -57,7 +57,26 @@ class transmission_stats {
 	$pos = strpos($raw, "\n\nTOTAL\n");
 	if ($pos === false) return;
 	$tot = substr($raw, $pos);
-
+	
+	preg_match('/Started (\d+) time/', $tot, $matches);
+	if (isset(	     $matches[1])) 
+	    $starts = intval($matches[1]);
+	
+	$fs = ['Uploaded', 'Downloaded', 'Ratio', 'Duration'];
+	
+	$refa['in'] = $tot;
+	$refa['out'] = [];
+	
+	array_walk_recursive($fs, function($item) use (&$refa){
+	    $refa['out'] = array_merge(self::parse3($item, $refa['in']), $refa['out']);
+	}, $refa);
+	
+	$reta = $refa['out'];
+	$reta['Starts'] = $starts;
+	
+	$this->alldat['srv'] = $reta;
+	
+	
 	return;
     }
 
@@ -80,8 +99,6 @@ class transmission_stats {
     
     private function ptr($raw) {
 
-	//     Tracker had 731 seeders and 18 leechers 7 minutes (442 seconds) ago
-	//     Tracker had  731 seeders and   18   leechers 7 minutes (442 seconds) ago
 	$p = '/Tracker had (\d+) seeders and (\d+) leechers [^\(]+\((\d+) seconds\) ago/';
 	preg_match_all($p, $raw, $matches); unset($p, $raw);
 
@@ -118,6 +135,17 @@ class transmission_stats {
 	$r = "/$key:\s*(.+)\n/";
 	preg_match($r, $hay, $matches);
 	return $matches;
+    }
+    
+    private static function parse4($v, $k)  {
+	
+	$t[$ain] = 1;
+	$ain = $t;
+	
+	return;
+	
+	/* if (!isset($rin['out'])) $rin['out'] = [];
+	$rin['out'] = array_merge(self::parse3($key, $rin['in']), $rin['out']); */
     }
     
     private static function parse3($key, $din) {
