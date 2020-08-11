@@ -107,9 +107,6 @@ function popperm(&$rin, $tor) {
 
     $mb = byteswu($m[1], $m[2]);
     $rin['totmb'] = $mb;
-    
-
-    $x  = 2;
 }
 
 function ifExists(...$args) {
@@ -136,8 +133,10 @@ function tstats_ht_filter($rin) {
 
 	$t = [];	
 	$up   = $tor['Uploaded']['v'];
-	$up   = floatval(preg_replace('/[^\d\.]/', '', $up));
-	$t['upmb'] = $up;
+	
+	preg_match('/(\d+\.\d+) (\w+)/', $up, $m); unset($up);
+	$mb = byteswu($m[1], $m[2]); unset($m);
+	$t['upmb'] = $mb; unset($mb);
 	$t['rat'] = floatval($tor['Ratio']['v']);
 	
 	poptra($t, $r['tra']);
@@ -197,6 +196,7 @@ function cutme($ain, $bin, $cin) {
     
     $sd  = abs($as - $bs);
     $hrd = $sd / 3600;
+    
     $mbd = abs($amb - $bmb);
         
     if ($mbd < KW_TSTATS_IGNORE_MB_D && $hrd  < KW_TSTATS_IGNORE_HR_D) return true;
