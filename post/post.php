@@ -27,9 +27,7 @@ function postit() {
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	    curl_setopt($ch, CURLOPT_POST, TRUE);		
 	    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-	    // curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 	    $res = curl_exec($ch);
-	    // echo $res;
 	    curl_close($ch);
 	} else {
 	    file_put_contents('/tmp/fifo.txt', $json);

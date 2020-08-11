@@ -38,7 +38,7 @@ function getmyrat($n, $d) {
 }
 
 function htf2($in) {
-    $ret['headers'] = ['myr', 'rat', 'MB', 'asof', 's4','l4', 'r4', 's6','l6', 'r6', 'seedt', 'ts'];
+    $ret['headers'] = ['myr', 'rat', 'MB', 'asof', 's4','l4', 'r4', 's6','l6', 'r6', 'seedt', 'ts', 'sra'];
     $ret['finfo']['ts'] = 'hide';
     $ret['v'] = [];
         
@@ -52,6 +52,7 @@ function htf2($in) {
 	poprat($t, $r);
 	$t[] = $r['seedtime'];
 	$t[] = $r['ts'];
+	$t[] = $r['sra'];
 	$ret['v'][] = $t;
     }
    
@@ -111,6 +112,19 @@ function popperm(&$rin, $tor) {
     $x  = 2;
 }
 
+function ifExists(...$args) {
+    
+    $t = $args[0];
+    
+    for($i=2; $i < count($args); $i++) {
+	if (!isset($t[$args[$i]])) return $args[1];
+	$t =       $t[$args[$i]];
+    }
+    
+    return $t;
+    
+}
+
 function tstats_ht_filter($rin) {
     $ret = [];
     
@@ -138,6 +152,8 @@ function tstats_ht_filter($rin) {
 	$t['asof'] = date('D n/j h:iA (s', $r['ts']) . 's)';  // Wed 6/3 09:50PM (00s)	
 	
 	$t['ts']   = $r['ts'];
+	
+	$t['sra'] = ifExists($r, '', 'srv', 'Ratio', 'v');// $r['srv']['Ratio']['v'];
 	
 	$ret[] = $t;
     }
