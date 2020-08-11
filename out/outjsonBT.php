@@ -153,7 +153,7 @@ function tstats_ht_filter($rin) {
 	
 	$t['ts']   = $r['ts'];
 	
-	$t['sra'] = ifExists($r, '', 'srv', 'Ratio', 'v');// $r['srv']['Ratio']['v'];
+	$t['sra'] = calcSRA($r);
 	
 	$ret[] = $t;
     }
@@ -162,6 +162,30 @@ function tstats_ht_filter($rin) {
     
     return $ret;
 
+}
+
+function calcSRA($r) {
+    $auto = ifExists($r, '', 'srv', 'Ratio'     , 'v');
+    $up   = ifExists($r, '', 'srv', 'Uploaded'  , 'v');
+    $dn   = ifExists($r, '', 'srv', 'Downloaded', 'v');
+    
+    if (!$up || !$dn) return $auto;
+    
+    $re = '/^\d+\.?\d*/';
+    
+    preg_match($re, $up, $upm);
+    preg_match($re, $dn, $dnm);
+    
+    if (!$upm || !$dnm) return $auto;
+    
+    $dnf = floatval($dnm[0]);
+    if (!$dnf) return $auto;
+    
+    $rat = $upm[0] / $dnf;
+    
+    $rrs = sprintf('%0.3f', $rat);
+    
+    return $rrs;
 }
 
 function cutme($ain, $bin, $cin) {
