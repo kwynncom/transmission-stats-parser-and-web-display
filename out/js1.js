@@ -41,8 +41,6 @@ function proc1() {
 	    const tde = cree('td');
 	    let tv =  r[j];
 	    if      (head === 'rat') tde.className = 'rattd';
-	    else if (head === 'MB')  tv = r[j].toFixed(1);
-	    else if (head === 'myr') tv = r[j].toFixed(3);
 	    
 	    tde.innerHTML = tv;
 	    tre.append(tde);	

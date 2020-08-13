@@ -2,9 +2,10 @@
 
 require_once('/opt/kwynn/kwcod.php');
 require_once(__DIR__ . '/../dao.php');
+require_once('cliVersusFiles.php');
 
-define('KW_TSTATS_IGNORE_MB_D', 10);
-define('KW_TSTATS_IGNORE_HR_D',  3);
+define('KW_TSTATS_IGNORE_RAT',  0.98);
+define('KW_TSTATS_IGNORE_HR_D',    3);
 
 function getTSOutput() {
     
@@ -38,28 +39,28 @@ function getmyrat($n, $d) {
 }
 
 function htf2($in) {
-    $ret['headers'] = ['myr', 'rat', 'MB', 'asof', 's4','l4', 'r4', 's6','l6', 'r6', 'seedt', 'ts', 'sra'];
+    $ret['headers'] = ['myr', 'MB', 'sra', 'r4', 'r6', 'asof', 's4','l4', 's6','l6', 'seedt', 'ts'];
     $ret['finfo']['ts'] = 'hide';
     $ret['v'] = [];
         
     foreach($in as $r) {
 	popperm2($ret, $r);
 	$t = [];
-	$t[] = getmyrat($r['upmb'], $ret['perm'][1]); // must match above
-	$t[] = $r['rat'];
-	$t[] = $r['upmb'];
+	$t[] = $r['myrat'];
+	$t[] = $r['myup'];
+	$t[] = $r['sra'];
+	poprat($t, $r, 'rats');
 	$t[] = $r['asof'];
-	poprat($t, $r);
+	poprat($t, $r, 'inputs');
 	$t[] = $r['seedtime'];
 	$t[] = $r['ts'];
-	$t[] = $r['sra'];
 	$ret['v'][] = $t;
     }
    
     return $ret;
 }
 
-function poprat(&$t, $r) {
+function poprat(&$t, $r, $type) {
     
     $fs = [4,6];
     
@@ -67,10 +68,14 @@ function poprat(&$t, $r) {
 	$l = $f . 'l';
 	$s = $f . 's';
 	$rat = $f . 'r';
-	$t[] = $r[$s];
-	$t[] = $r[$l];
-	if (isset($r[$l]) && $r[$l] > 0) $t[] = intval(round($r[$s] / $r[$l]));
-	else				 $t[] = '-';
+	if ($type === 'inputs') {
+	    $t[] = $r[$s];
+	    $t[] = $r[$l];
+	}
+	if ($type === 'rats') {
+	    if (isset($r[$l]) && $r[$l] > 0) $t[] = intval(round($r[$s] / $r[$l]));
+	    else				 $t[] = '-';
+	}
     }
     
     return;
@@ -131,7 +136,8 @@ function tstats_ht_filter($rin) {
 	$tor = $r['tor'];
 	if (!isset($tor['Uploaded']['v'])) continue;
 
-	$t = [];	
+	$t = [];
+
 	$up   = $tor['Uploaded']['v'];
 	
 	preg_match('/(\d+\.\d+) (\w+)/', $up, $m); unset($up);
@@ -152,7 +158,10 @@ function tstats_ht_filter($rin) {
 	
 	$t['ts']   = $r['ts'];
 	
-	$t['sra'] = calcSRA($r);
+	$rawsra = calcSRA($r);
+	
+	$t['sra'] = sprintf('%0.3f', $rawsra);
+	trans_file_analysis::mod($r, $t, $rawsra);
 	
 	$ret[] = $t;
     }
@@ -182,36 +191,48 @@ function calcSRA($r) {
     
     $rat = $upm[0] / $dnf;
     
-    $rrs = sprintf('%0.3f', $rat);
-    
-    return $rrs;
+    return $rat;
 }
 
-function cutme($ain, $bin, $cin) {
+function cutme($din) {
     
-    $amb = $ain['upmb'];
-    $bmb = $bin['upmb'];
-    $as  = $ain['ts'];
-    $bs  = $cin['ts'];
+    static $lpts = false;
+    static $lpmb = false;
+
+    $mb = $din['upmb'];
+    $ts = $din['ts'  ];
     
-    $sd  = abs($as - $bs);
+    if ($lpts === false) {
+	$lpts = $ts;
+	$lpmb = $mb;
+	return false;
+    }
+    
+    $sd  = abs($ts - $lpts);
     $hrd = $sd / 3600;
     
-    $mbd = abs($amb - $bmb);
+    if ($lpmb > 0) $mbr = $mb / $lpmb;
+    else           $mbr = -1;
         
-    if ($mbd < KW_TSTATS_IGNORE_MB_D && $hrd  < KW_TSTATS_IGNORE_HR_D) return true;
+    if ($mbr > KW_TSTATS_IGNORE_RAT && $hrd  < KW_TSTATS_IGNORE_HR_D) return true;
+    
+    $lpts = $ts;
+    $lpmb = $mb;
+    
     return false;
 }
 
 function filterClose(&$vin) {
     
-    static $cfn = 15; // check first n
+    static $cfn =  5; // check first n
+    static $stn =  1; 
     
     $cnt = count($vin);
     if ($cnt < $cfn) return;
+    if ($cnt < $stn) return;
     
     $un = [];
-    for ($i=$cfn; $i < $cnt - 2; $i++) if (cutme($vin[$i],  $vin[$i-1], $vin[$i+1])) $un[$i] = 1;
+    for ($i=$cfn; $i < $cnt - $stn; $i++) if (cutme($vin[$i])) $un[$i] = 1;
     
     if (count($un) === 0) return;
     foreach($un as $i => $ignore) unset($vin[$i]);

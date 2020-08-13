@@ -17,8 +17,8 @@ class trans_direct_files {
 	    $tret[] = $fu($path);
 	}
 	
-	$ret['total'  ] = $tret[1];
-	$ret['torrent'] = $tret[0];
+	$ret['tot'] = $tret[1];
+	$ret['tor'] = $tret[0];
 	
 	return $ret;
     }
@@ -39,8 +39,10 @@ class trans_direct_files {
 	    $vs[$alias] = $b; unset($om, $b, $f, $alias);
 	} unset($t, $fs);
 	
-	$r  = $vs['up'] / $vs['dn'];
+	$dn = $vs['dn'];
 	$up = $vs['up']; unset($vs);
+	
+	$r  = $up / $dn;
 	
 	return get_defined_vars();
     }
@@ -50,7 +52,9 @@ class trans_direct_files {
 	$ts = filemtime($path); unset($path);
 	
 	$a = json_decode($t, 1); unset($t);
-	$r = $a['uploaded-bytes'] / $a['downloaded-bytes']; unset($a);
+	$up = $a['uploaded-bytes'];
+	$dn = $a['downloaded-bytes'];
+	$r = $up / $dn; unset($a);
 	return get_defined_vars();
 	
     }

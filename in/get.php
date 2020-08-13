@@ -3,6 +3,7 @@
 require_once('/opt/kwynn/kwcod.php');
 require_once('/opt/kwynn/kwutils.php');
 require_once('/opt/kwynn/creds.php');
+require_once('directFiles.php');
 
 class transmission_stats {
     
@@ -12,9 +13,13 @@ class transmission_stats {
 	$this->alldat['tra'] = [];
 	$this->alldat['errmsg'] = '';
 	$this->alldat['tra_lmago'] = '';
+	$this->alldat['cfi'] = [];
 	$this->p1();
 	$this->p20();
+	$this->p30();
     }
+    
+    private function p30() { $this->alldat['cfi'] = trans_direct_files::get();    }
     
     public function get() { return $this->alldat; }
 
