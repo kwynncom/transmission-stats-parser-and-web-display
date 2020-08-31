@@ -59,6 +59,3 @@ class trans_direct_files {
 	
     }
 }
-
-trans_direct_files::get();
-

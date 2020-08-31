@@ -11,9 +11,9 @@ define('KW_TSTATS_IGNORE_HR_D',    3);
 function getTSOutput() {
     
     $dao = new dao_tstats();
-    $rawall = $dao->get(); unset($dao);
+    $rawall = $dao->get(); 
     $all = tstats_ht_filter($rawall);
-    $all = filter20($all);
+    $all = filter20::filter($all, $dao); unset($dao);
     if (!$all) return false;
     $all = htf2($all);
     $all['lmago'] = getlmago($rawall); unset($rawall);
