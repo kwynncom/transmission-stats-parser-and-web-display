@@ -41,8 +41,8 @@ class filter20 {
 	    $v0 = $all[0][$f];
 	    $v1 = $all[1][$f];
 	    $d = $v0 - $v1;
-	    if ($f !== 'ts' && $d >   0.0009) return $all;
-	    if ($f === 'ts' && $d > 300     ) return $all;
+	    if ($f !== 'ts' && $d >   0.000009) return $all;
+	    if ($f === 'ts' && $d > 300       ) return $all;
 	}
 	return false;
     }

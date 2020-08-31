@@ -227,7 +227,7 @@ function cutme($din) {
 
 function filterClose(&$vin) {
     
-    static $cfn =  5; // check first n
+    static $cfn =  5; // show this number of the first as in do not further filter them
     static $stn =  1; 
     
     $cnt = count($vin);

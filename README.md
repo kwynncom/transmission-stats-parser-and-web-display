@@ -13,16 +13,12 @@ RUNNING COMMENTARY - from latest to earliest
 
 31st / 31
 
-5:49pm
+7:18pm - I think it's working.  I had forgotten the interaction between the "filter20" filter and the "cutme" filter.  
 
-Well, wrong in that it will take a very large, fast change to see new data.
+5:49pm - Well, wrong in that it will take a very large, fast change to see new data.
+5:47pm - That means that clido1 output is wrong, too.
 
-5:47pm
-
-That means that clido1 output is wrong, too.
-
-
-31st 5:42pm EDT / GMT -4 / Atlanta / New York
+5:42pm EDT / GMT -4 / Atlanta / New York
 
 My new filter algorithm is wrong.  I am comparing the readings 20 seconds apart, so they will never be over 5 minutes.  Also, those are not the upload 
 numbers I should be comparing.  The correct algorithm is to track the data last sent to the server / web.  I should be comparing that with the latest reading.  
