@@ -5,11 +5,18 @@ https://kwynn.com/t/20/06/tstats/  - running at
 
 The /opt/kwynn code is at  https://github.com/kwynncom/kwynn-php-general-utils
 
-RUNNING COMMENTARY
+RUNNING COMMENTARY - from latest to earliest
 
 2020
 
 08 (August)
+
+31st / 31
+
+5:47pm
+
+That means that clido1 output is wrong, too.
+
 
 31st 5:42pm EDT / GMT -4 / Atlanta / New York
 
