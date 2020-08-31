@@ -13,6 +13,10 @@ RUNNING COMMENTARY - from latest to earliest
 
 31st / 31
 
+5:49pm
+
+Well, wrong in that it will take a very large, fast change to see new data.
+
 5:47pm
 
 That means that clido1 output is wrong, too.
