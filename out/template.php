@@ -18,14 +18,18 @@
     
     body { font-family: sans-serif }
     .explanationTop { 
-	margin: 0
+	margin: 0;
+	display: inline-block;
     }
     </style>
 
 </head>
 <body>
 
-    <p class="explanation explanationTop">Explanation below the data.    </p>
+    <div>
+	<p class="explanation explanationTop">Explanation below the data.</p>
+	<button onclick="window.history.go(0);">redo</button>
+    </div>
     
     <div>last tracker check (min ago): <span id='lmago' /></div>
     <div>

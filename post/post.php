@@ -2,15 +2,13 @@
 
 require_once('/opt/kwynn/kwcod.php');
 require_once('/opt/kwynn/creds.php');
-require_once(__DIR__ . '/../out/outjsonBT.php');
 require_once('testCond.php');
 
-function postit() {
+function postit($parr) {
     
     $cro = new kwynn_creds();
     $creds = $cro->getType('tstats_2020');
     
-    $parr = getTSOutput(); 
     $parr['key'] = $creds['send_key'];
     
     $urls[]   = $creds['localhost'];

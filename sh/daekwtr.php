@@ -20,7 +20,7 @@ class kwProcMutex {
 
 	if (PHP_SAPI !== 'cli') die('cli only');
 
-	$sleep = 300;
+	$sleep = 20;
 	
 	do {
 	    $funcin();

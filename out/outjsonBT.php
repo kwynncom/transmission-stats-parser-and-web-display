@@ -3,6 +3,7 @@
 require_once('/opt/kwynn/kwcod.php');
 require_once(__DIR__ . '/../dao.php');
 require_once('cliVersusFiles.php');
+require_once('filter20.php');
 
 define('KW_TSTATS_IGNORE_RAT',  0.98);
 define('KW_TSTATS_IGNORE_HR_D',    3);
@@ -11,7 +12,9 @@ function getTSOutput() {
     
     $dao = new dao_tstats();
     $rawall = $dao->get(); unset($dao);
-    $all = tstats_ht_filter($rawall); 
+    $all = tstats_ht_filter($rawall);
+    $all = filter20($all);
+    if (!$all) return false;
     $all = htf2($all);
     $all['lmago'] = getlmago($rawall); unset($rawall);
     
