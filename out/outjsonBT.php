@@ -5,8 +5,70 @@ require_once(__DIR__ . '/../dao.php');
 require_once('cliVersusFiles.php');
 require_once('filter20.php');
 
-define('KW_TSTATS_IGNORE_RAT',  0.98);
-define('KW_TSTATS_IGNORE_HR_D',    3);
+function cutf10($rin, $hrdin, $tsin) {
+    static $ls = false;
+    
+    $dago = (time() - $tsin) / 86400;
+    
+    if (!$ls) $ls = [
+	    2      => ['r' => 0.997, 'hr' => 1 ],
+	    100000 => ['r' => 0.800, 'hr' => 24]
+	];
+    
+    foreach($ls as $d => $v) if ($dago < $d) {
+	if ($rin > $v['r'] && $hrdin < $v['hr']) return true;
+	return false;
+    }
+    
+    return false;
+}
+
+function cutme($din, $iin, $cntin) { // iin and cntin are for debugging only
+    
+    static $lpts = false;
+    static $lpmb = false;
+
+    $mb = $din['upmb'];
+    $ts = $din['ts'  ];
+    
+    if ($lpts === false) {
+	$lpts = $ts;
+	$lpmb = $mb;
+	return false;
+    }
+    
+    $sd  = abs($ts - $lpts);
+    $hrd = $sd / 3600;
+    
+    if ($lpmb > 0) $mbr = $mb / $lpmb;
+    else           $mbr = -1;
+       
+    if (cutf10($mbr, $hrd, $ts)) return true;
+    
+    $lpts = $ts;
+    $lpmb = $mb;
+    
+    return false;
+}
+
+function filterClose(&$vin) {
+    
+    static $cfn =  1; // show this number of the first as in do not further filter them
+    static $stn =  1; 
+    
+    $cnt = count($vin);
+    if ($cnt < $cfn) return;
+    if ($cnt < $stn) return;
+    
+    $un = [];
+    for ($i=$cfn; $i < $cnt - $stn; $i++) if (cutme($vin[$i], $i, $cnt)) $un[$i] = 1;
+    
+    if (count($un) === 0) return;
+    foreach($un as $i => $ignore) unset($vin[$i]);
+    $vin = array_values($vin); // reorder indexes
+    // filterClose($vin);
+    return;
+}
 
 function getTSOutput() {
     
@@ -157,7 +219,7 @@ function tstats_ht_filter($rin) {
 	$seed = seed_filt($seed);
 	$t['seedtime'] = $seed;
 
-	$t['asof'] = date('D n/j h:iA (s', $r['ts']) . 's)';  // Wed 6/3 09:50PM (00s)	
+	$t['asof'] = date('D n/j h:iA (s', $r['ts']) . 's)';
 	
 	$t['ts']   = $r['ts'];
 	
@@ -195,52 +257,6 @@ function calcSRA($r) {
     $rat = $upm[0] / $dnf;
     
     return $rat;
-}
-
-function cutme($din) {
-    
-    static $lpts = false;
-    static $lpmb = false;
-
-    $mb = $din['upmb'];
-    $ts = $din['ts'  ];
-    
-    if ($lpts === false) {
-	$lpts = $ts;
-	$lpmb = $mb;
-	return false;
-    }
-    
-    $sd  = abs($ts - $lpts);
-    $hrd = $sd / 3600;
-    
-    if ($lpmb > 0) $mbr = $mb / $lpmb;
-    else           $mbr = -1;
-        
-    if ($mbr > KW_TSTATS_IGNORE_RAT && $hrd  < KW_TSTATS_IGNORE_HR_D) return true;
-    
-    $lpts = $ts;
-    $lpmb = $mb;
-    
-    return false;
-}
-
-function filterClose(&$vin) {
-    
-    static $cfn =  5; // show this number of the first as in do not further filter them
-    static $stn =  1; 
-    
-    $cnt = count($vin);
-    if ($cnt < $cfn) return;
-    if ($cnt < $stn) return;
-    
-    $un = [];
-    for ($i=$cfn; $i < $cnt - $stn; $i++) if (cutme($vin[$i])) $un[$i] = 1;
-    
-    if (count($un) === 0) return;
-    foreach($un as $i => $ignore) unset($vin[$i]);
-    $vin = array_values($vin); // reorder indexes
-    // filterClose($vin);
 }
 
 function seed_filt($s) {
