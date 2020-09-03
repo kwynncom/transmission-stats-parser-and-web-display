@@ -32,6 +32,13 @@ class filter20 {
     private function getDat() { return $this->rdat; }
     
     private static function filter20($all) {
+	
+	static $processFirst = true;
+	
+	if ($processFirst) {
+	    $processFirst = false;
+	    return $all;
+	}
 
 	for($i=0; $i < 2; $i++) if (!isset($all[$i])) return $all;
 

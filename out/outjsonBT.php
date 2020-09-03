@@ -5,14 +5,18 @@ require_once(__DIR__ . '/../dao.php');
 require_once('cliVersusFiles.php');
 require_once('filter20.php');
 
+define('KWYNN_TSTATS_ALWAYS_LATEST_N'  , 1);
+define('KWYNN_TSTATS_ALWAYS_EARLIEST_N', 1);
+
 function cutf10($rin, $hrdin, $tsin) {
     static $ls = false;
+    static $mx = PHP_INT_MAX;
     
     $dago = (time() - $tsin) / 86400;
     
     if (!$ls) $ls = [
-	    2      => ['r' => 0.997, 'hr' => 1 ],
-	    100000 => ['r' => 0.800, 'hr' => 24]
+	    2   => ['r' => 0.997, 'hr' => 1 ],
+	    $mx => ['r' => 0.800, 'hr' => 24]
 	];
     
     foreach($ls as $d => $v) if ($dago < $d) {
@@ -53,8 +57,8 @@ function cutme($din, $iin, $cntin) { // iin and cntin are for debugging only
 
 function filterClose(&$vin) {
     
-    static $cfn =  1; // show this number of the first as in do not further filter them
-    static $stn =  1; 
+    static $cfn =  KWYNN_TSTATS_ALWAYS_LATEST_N; // show this number of the first as in do not further filter them
+    static $stn =  KWYNN_TSTATS_ALWAYS_EARLIEST_N; 
     
     $cnt = count($vin);
     if ($cnt < $cfn) return;
