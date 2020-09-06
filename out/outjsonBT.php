@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../dao.php');
 require_once('cliVersusFiles.php');
 require_once('filter20.php');
 
-define('KWYNN_TSTATS_ALWAYS_LATEST_N'  , 1);
+define('KWYNN_TSTATS_ALWAYS_LATEST_N'  , 0);
 define('KWYNN_TSTATS_ALWAYS_EARLIEST_N', 1);
 
 function cutf10($rin, $hrdin, $tsin) {
@@ -70,7 +70,6 @@ function filterClose(&$vin) {
     if (count($un) === 0) return;
     foreach($un as $i => $ignore) unset($vin[$i]);
     $vin = array_values($vin); // reorder indexes
-    // filterClose($vin);
     return;
 }
 
@@ -82,7 +81,8 @@ function getTSOutput() {
     $all = filter20::filter($all, $dao); unset($dao);
     if (!$all) return false;
     $all = htf2($all);
-    $all['lmago'] = getlmago($rawall); unset($rawall);
+    $all['lmago'] = getlmago($rawall);
+    $all['ltrts'] = $rawall[0]['tra_ltrts']; unset($rawall);
     
     return $all;
 }
@@ -223,7 +223,7 @@ function tstats_ht_filter($rin) {
 	$seed = seed_filt($seed);
 	$t['seedtime'] = $seed;
 
-	$t['asof'] = date('D n/j h:iA (s', $r['ts']) . 's)';
+	$t['asof'] = date('D m/d h:iA (s', $r['ts']) . 's)';
 	
 	$t['ts']   = $r['ts'];
 	

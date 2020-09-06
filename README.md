@@ -9,6 +9,16 @@ RUNNING COMMENTARY - from latest to earliest
 
 2020
 
+09 (Sept)
+
+5th
+
+7:41pm
+
+taking clock code from https://github.com/kwynncom/javascript-synchronized-clock/blob/master/js/kwClockGeneral.js ; 2020/09/05 7:07pm
+see credit to Aaron Farrar in the other project's readme
+
+
 08 (August)
 
 31st / 31

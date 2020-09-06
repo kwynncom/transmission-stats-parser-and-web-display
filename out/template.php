@@ -7,6 +7,7 @@
 <title>my BitTorrent stats</title>
 <script src="out/utils.js"></script>
 <script>var KW_TSTATS_INIT_O    = false;</script>
+<script src="out/clock.js"></script>
 <script src="out/js1.js"></script>
 
 <style>
@@ -21,6 +22,8 @@
 	margin: 0;
 	display: inline-block;
     }
+    
+    td.clock { text-align: right}
     </style>
 
 </head>
@@ -31,7 +34,7 @@
 	<button onclick="window.history.go(0);">redo</button>
     </div>
     
-    <div>last tracker check (min ago): <span id='lmago' /></div>
+    <!-- <div>last tracker check (min ago): <span id='lmago' /></div> -->
     <div>
 	<div id='stattabc'></div>
 	<div>

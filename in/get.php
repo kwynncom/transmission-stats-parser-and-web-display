@@ -124,10 +124,11 @@ class transmission_stats {
 	    
 	    $ret[$k]['seeders' ] = intval($matches[1][$i]);
 	    $ret[$k]['leechers'] = intval($matches[2][$i]);
-	    $mago = intval($matches[3][$i]);
-	    $ret[$k]['s_ago'] = $mago;
+	    $sago = intval($matches[3][$i]);
+	    $ret[$k]['s_ago'] = $sago;
 	    if (!$this->alldat['tra_lmago']) 
-		 $this->alldat['tra_lmago'] = intval(round($mago / 60));
+		 $this->alldat['tra_lmago'] = intval(round($sago / 60));
+		 $this->alldat['tra_ltrts'] = time() - $sago;
 	    	    
 	    $i++;
 	    unset($k);

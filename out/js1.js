@@ -5,6 +5,29 @@ function shouldHide(fi, head) {
     return false;
 }
 
+function proc30Clock(ele, ltrts, td0) {
+    clockSetup(ele, ltrts, td0);
+}
+
+function proc20Clock(tab, fs, bigd) {
+    
+    const asofi = fs.indexOf('asof');
+    const tr = cree('tr');
+    
+    let td0;
+    
+    for(let i=0; i < 3; i++) {
+	const td = cree('td');
+	if      (i === 0) { td.colSpan = asofi; td0 = td; }
+	else if (i === 1) proc30Clock(td, bigd['ltrts'], td0);
+	else if (i === 2) td.colSpan = fs.length - asofi + 1;
+	tr.append(td);	
+    }
+    
+    tab.append(tr);
+    
+}
+
 function proc1() {
     const tabele = cree('table');
     document.getElementById('stattabc').append(tabele); 
@@ -12,13 +35,17 @@ function proc1() {
     
     const bigd = KW_TSTATS_INIT_O;
 
-    byid('lmago').innerHTML = bigd['lmago'];
+    // byid('lmago').innerHTML = bigd['lmago'];
     const fs   = bigd['headers'];
     const fi   = bigd['finfo'];
     const trh = cree('tr');
     
+    proc20Clock(tabele, fs, bigd);
+
     for (let i=0; i < fs.length; i++) {
 	const head = fs[i];
+	
+
 	
 	if (shouldHide(fi, head)) continue;
 
