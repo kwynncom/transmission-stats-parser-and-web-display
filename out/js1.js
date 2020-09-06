@@ -44,11 +44,7 @@ function proc1() {
 
     for (let i=0; i < fs.length; i++) {
 	const head = fs[i];
-	
-
-	
 	if (shouldHide(fi, head)) continue;
-
 	const th = cree('th');
 	th.innerHTML = head;
 	trh.append(th);

@@ -40,7 +40,7 @@ function clockTickDisplay(ele, ss, ltrts) {
     dif(byid('lmago'), dm);
 }
 
-function clockTickStart(ele, ss, ltrts) { 
+function clockTickStart(ele, ss, ltrts, lm) { 
     clockTickDisplay(ele, ss, ltrts);
     setInterval(function() { 
 	clockTickDisplay(ele, ss, ltrts); 
@@ -56,9 +56,11 @@ function clockSetup(ele, ltrts, td0) {
    ele.append(ms);
    ele.append(ss);
    
-   td0.innerHTML = "last tracker check (min ago): <span id='lmago' />";
-   const magoe = byid('lmago');
-    
+   const lm = cree('span');
+   lm.id = 'lmago';
+   td0.innerHTML = "last tr check (min ago): ";
+   td0.append(lm);
+   
    clockTickStart(ms, ss, ltrts);
     
 }
