@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php require_once('getjsonweb.php'); ?>
+<?php 
+require_once('getjsonweb.php'); 
+?>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,8 +40,8 @@
     <div>
 	<div id='stattabc'></div>
 	<div>
-	    <div><span id='fname' /></div>
-	    <div><span id='totszh' /></div>	    
+		<div><span id='fname' ></span></div>
+		<div><span id='totszh'></span></div>	    
 	</div>
     </div>
     
@@ -52,7 +54,8 @@
     <p>This source code is on GitHub: 
 	<a href ='https://github.com/kwynncom/transmission-stats-parser-and-web-display'>https://github.com/kwynncom/transmission-stats-parser-and-web-display</a>
     </p>
-    
+
+	<script>KW_TSTATS_INIT_O = <?php echo getjsonweb(); ?>;</script>
+	
 </body>
-<script>KW_TSTATS_INIT_O = <?php echo getjsonweb(); ?>;</script>
 </html>

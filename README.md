@@ -7,6 +7,49 @@ The /opt/kwynn code is at  https://github.com/kwynncom/kwynn-php-general-utils
 
 RUNNING COMMENTARY - from latest to earliest
 
+2021
+
+November 
+
+5th
+
+I'm trying to get this running on a new server, and I am remembering how I did it.  The CLI side and the web side are independent because I 
+want to show off my stats on kwynn.com.  
+
+Looks like I should run /sh/daekwtr.php BUT, I have to set up:
+
+I need to set remote credentials in tranmission and the make a MongoDB creds database entry with the login info.  
+The /in/get.php file has the properties needed.  Set the debugger on /sh/clido1.php to trace creds.  It will look like this:
+
+See send_key below.
+
+{
+    "type" : "transmission_bittorrent_remote_user",
+    "cred" : "user:password",
+    "send_key" : "blahblahblah"
+}
+
+Have to install transmission-remote :
+sudo apt install transmission-cli
+
+Have to set transmission_stats::torrentIdx const in get.php.  It looks like older torrents stick aroud, so you have to figure out which one is active lik this:
+
+transmission-remote -n  'user:pasword'  -t 2 -i
+
+Change the 2 to 0 or 1 or whatever until you get data.  Note this can change from one restart to another if you delete a torrent in between.
+
+The client side needs a $creds["send_key"].  The receive key on the web end is the password_hash() as best I remember.  
+
+Transmission needs to be running.  
+
+Set $creds["localhost"] to the root of the locally running web (this package /set of files)
+
+If 
+/sh/php clido1.php 
+runs silently, you're getting closer
+
+The local system also needs a receive key if you're using it as a web display
+
 2020
 
 09 (Sept)

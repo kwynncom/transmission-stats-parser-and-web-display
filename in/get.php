@@ -7,6 +7,8 @@ require_once('directFiles.php');
 
 class transmission_stats {
     
+	const torrentIdx = 1; 
+	
     public function __construct() {
 	$this->alldat = [];
 	$this->alldat['tor'] = [];
@@ -25,12 +27,12 @@ class transmission_stats {
 
     private function runCmd($sw = '') {
 	$creds = new kwynn_creds();
-	$credo = $creds->getType('transmission_bittorrent_remote_user');
+	$credo = $creds->getType('tstats_2020');
 	$cred  = $credo['cred'];
 	$cmd  = 'transmission-remote -n ';
 	$cmd .= " '$cred' ";
 	if (!($sw && isset($sw[0]) && $sw[0] === '-')) {
-	$cmd .= ' -t 1 -i';
+	$cmd .= ' -t ' . self::torrentIdx . ' -i';
 	$cmd .= $sw; }
 	else 
 	$cmd .= " $sw ";
